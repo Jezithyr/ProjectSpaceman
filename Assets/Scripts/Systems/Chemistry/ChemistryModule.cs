@@ -40,6 +40,8 @@ public class ChemistryModule : Module
         Debug.Log("test");
         //This isn't what it looks like...
         //Precalculate substance relationships and cache them for later use during runtime
+        
+        //TODO: Replace foreach with For i (Foreach runs slower on lists than arrays)
         foreach (var reactionList in EnabledReactions)
         {
             foreach (var reaction in reactionList.Reactions)
