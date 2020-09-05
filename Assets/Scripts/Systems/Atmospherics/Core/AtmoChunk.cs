@@ -6,9 +6,13 @@ using ScriptableGameFramework;
 public class AtmoChunk : Object
 {
     //===statics===
-    private static int MasterGasIdMaskSize = -1;
-    private static int NumberOfGases = -1;
-    private const int VoxelSize = 16;
+    private static int masterGasIdMaskSize = -1;
+    private static int numberOfGases = -1;
+    public static int NumberOfGases{get=>numberOfGases;}
+    private const int chunkSize = 16;
+    public static int ChunkSize{get=>chunkSize;}
+    private const int voxelsize = 1;
+    public static int Voxelsize{get=>voxelsize;}
     struct GasMolPair
     {
         int Gas;
@@ -29,7 +33,7 @@ public class AtmoChunk : Object
         float Temperature;
         public FluidVoxel(float pressure, float temperature)
         {
-            GasIds = new byte[MasterGasIdMaskSize];
+            GasIds = new byte[masterGasIdMaskSize];
             Mols = new float[NumberOfGases];
             Pressure = pressure;
             Temperature = temperature;
@@ -77,29 +81,50 @@ public class AtmoChunk : Object
 
     private FluidVoxel[,,] Voxels;
 
+
+    private Vector3 Origin;
     private void InitializeVoxels()
     {
-        Voxels = new FluidVoxel[VoxelSize,VoxelSize,VoxelSize];
+        Voxels = new FluidVoxel[chunkSize,chunkSize,chunkSize];
+        for (int x = 0; x < chunkSize; x++)
+        {
+           for (int y = 0; y < chunkSize; y++)
+            {
+                for (int z = 0; z < chunkSize; z++)
+                {
+                    Voxels[x,y,z] = new FluidVoxel(0,0);
+                }
+            } 
+        }
+    }
+
+    public void SetOrigin(Vector3 newOrigin)
+    {
+        if (Origin==null) Origin= newOrigin;
     }
 
 
     public AtmoChunk()
     {
         InitializeVoxels();
+    }
 
-
+    public AtmoChunk(Vector3 newOrigin)
+    {
+        Origin = newOrigin;
+        InitializeVoxels();
     }
 
     public static void RegisterGasIds(AtmosphericsModule atmoModule)
     {
-        if (MasterGasIdMaskSize!= -1) //If we already initialized exit out
+        if (masterGasIdMaskSize!= -1) //If we already initialized exit out
         {
             Debug.Log("WARNING: Already initialized Gas Ids");
             return;
         }
         NumberOfGases = (atmoModule.ActiveFluids.Count);
-        MasterGasIdMaskSize = (atmoModule.ActiveFluids.Count)/4; //round to the nearest byte
-        if ((atmoModule.ActiveFluids.Count)%4 > 0) MasterGasIdMaskSize += 1;
+        masterGasIdMaskSize = (atmoModule.ActiveFluids.Count)/4; //round to the nearest byte
+        if ((atmoModule.ActiveFluids.Count)%4 > 0) masterGasIdMaskSize += 1;
     }
 
 
