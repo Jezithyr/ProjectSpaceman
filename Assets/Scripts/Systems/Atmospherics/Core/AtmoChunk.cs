@@ -122,7 +122,7 @@ public class AtmoChunk : Object
             Debug.Log("WARNING: Already initialized Gas Ids");
             return;
         }
-        NumberOfGases = (atmoModule.ActiveFluids.Count);
+        numberOfGases = (atmoModule.ActiveFluids.Count);
         masterGasIdMaskSize = (atmoModule.ActiveFluids.Count)/4; //round to the nearest byte
         if ((atmoModule.ActiveFluids.Count)%4 > 0) masterGasIdMaskSize += 1;
     }
